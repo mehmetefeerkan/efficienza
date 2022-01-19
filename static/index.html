@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Efficienza | Private Midén</title>
+  <link rel="stylesheet" href="bootstrap.min.css">
+  <style>
+    body {
+      padding-top: 25vh;
+    }
+  </style>
+</head>
+
+<body class="bg-light">
+  <main role="main" class="container">
+    <div class="d-flex align-items-center p-3 my-3 text-black-50 bg-purple rounded box-shadow">
+      <div class="lh-100">
+        <h6 class="mb-0 text-black lh-100">Efficienza</h6>
+        <small>by ephesus | Mehmet Efe Erkan</small>
+      </div>
+    </div>
+    <div>
+      <div id="container" class="my-3 p-3 bg-white rounded box-shadow">
+        <h6 class="border-bottom border-gray pb-2 mb-0">User Statistics</h6>
+      </div>
+    </div>
+  </main>
+</body>
+<script src="axios.min.js"></script>
+<script>
+  axios.get("http://localhost:2202/stats").then(function (response) {
+    console.log(response.data);
+    let stats = response.data
+    stats.mouseClicksLeft = stats.mouseClicks.left
+    stats.mouseClicksRight = stats.mouseClicks.right
+    stats.mouseClicksMiddle = stats.mouseClicks.middle
+    stats.mouseClicksAll = stats.mouseClicksAll
+    Object.keys(stats).forEach(function (stat) {
+      console.log(stats[stat]);
+      $('#container').append(`
+      
+      <div class="media text-muted pt-3">
+          <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+            <strong class="d-block text-gray-dark">${stat}</strong>
+            ${stats[stat]}
+          </p>
+        </div>
+      
+      `)
+    })
+  })
+</script>
+
+</html>
