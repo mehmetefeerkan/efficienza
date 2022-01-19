@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const app = express();
+app.use(require('cors')())
 const init = Date.now()
 let lud = null;
 let muk = {}
