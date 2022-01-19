@@ -30,10 +30,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.25.0/axios.min.js" integrity="sha512-/Q6t3CASm04EliI1QyIDAA/nDo9R8FQ/BULoUFyN4n/BDdyIxeH7u++Z+eobdmr11gG5D/6nPFyDlnisDwhpYA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-  const isBrave = (navigator.brave && await navigator.brave.isBrave() || false) 
-  if (isBrave) {
-    alert("Plase disable Brave's 'Tracker & Ad Blocking' for this site in order to be able to establish a connection with the daemon.")
-  }
+  (async () => {
+    const isBrave = (navigator.brave && await navigator.brave.isBrave() || false) 
+    if (isBrave) {
+      alert("Plase disable Brave's 'Tracker & Ad Blocking' for this site in order to be able to establish a connection with the daemon.")
+    }
+  })
 </script>
 <script>
   axios.get("http://localhost:2202/stats").then(function (response) {
