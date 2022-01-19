@@ -1,10 +1,39 @@
 var gkm = require('./customgkm.js');
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const app = express();
 const init = Date.now()
+let lud = null;
+let muk = {}
+let totalCMx = 0
+let totalCMy = 0
+let lastxcent = 0
+let lastycent = 0
+let keystrokes = 0
+let mouseclicks = {
+    left: 0,
+    right: 0,
+    middle: 0,
+    all: 0
+}
+
+if (fs.existsSync('./lud.json')) {
+        lud  = (JSON.parse(fs.readFileSync("./lud.json", "utf8")));
+        mouseMoveX = lud.mouseMoveX;
+        mouseMoveY = lud.mouseMoveY;
+        keystrokes = lud.keyStrokes;
+        mouseclicks = lud.mouseClicks;
+        muk = lud.allKeyStrokes
+}
 app.get('/stats', function(req, res){
-    res.send(200, {
+    res.send(200, 
+        userData()
+    )
+})
+
+function userData() { 
+    return {
         since: init,
         for: process.uptime(),
         mouseMoveTotal: totalCMx + totalCMy,
@@ -16,8 +45,9 @@ app.get('/stats', function(req, res){
         mouseClicks: mouseclicks,
         mouseClicksPerSecond: mouseclicks.all / process.uptime(),
         allKeyStrokes: muk
-    })
-})
+    }
+}
+
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, '/static/index.html'));
   });
@@ -29,9 +59,8 @@ app.get('/bootstrap.min.css', function(req, res) {
     res.header('Content-Type', 'text/css')
     res.sendFile(path.join(__dirname, '/static/bootstrap.min.css'));
   });
-let muk = {}
 app.listen(2202)
-const pressedKeys    = new Set()
+const pressedKeys = new Set()
 
 // Listen to all key events (pressed, released, typed)
 gkm.events.on('key.pressed', function(data) {
@@ -39,7 +68,6 @@ gkm.events.on('key.pressed', function(data) {
     if (!pressedKeys.has(data)) {
         pressedKeys.add(data)
     }
-    // console.log(this.event + ' ' + data);
 });
 gkm.events.on('key.released', function(data) {
     data = data[0]
@@ -53,28 +81,14 @@ gkm.events.on('key.released', function(data) {
             muk [data] = {pressed: 1}
         }
     }
-    // console.log(this.event + ' ' + data);
 });
-let totalCMx = 0
-let totalCMy = 0
-let lastxcent = 0
-let lastycent = 0
-let keystrokes = 0
-let mouseclicks = {
-    left: 0,
-    right: 0,
-    middle: 0,
-    all: 0
-}
+
 // Listen to all mouse events (click, pressed, released, moved, dragged)
 gkm.events.on('mouse.moved', function(data) {
-    // console.log(this.event + ' ' + data);
     let x = parseInt(data[0].split(",")[0]);
     let y = parseInt(data[0].split(",")[1]);
-    // console.log(x, y);
     let xcent = (x / 100) / 3.42 //1.8
     let ycent = (y / 100) / 3.42 //1.8
-    // console.log(xcent, ycent);
     totalCMx = totalCMx + Math.abs(lastxcent - xcent)
     totalCMy = totalCMy + Math.abs(lastycent - ycent)
     lastxcent =  xcent
@@ -82,7 +96,6 @@ gkm.events.on('mouse.moved', function(data) {
 });
 gkm.events.on('mouse.*', function(data) {
     if (this.event === "mouse.pressed") {
-        // console.log(this.event, data);
         if (parseInt(data[0]) === 1) {
             mouseclicks.left++
         }
@@ -99,7 +112,5 @@ gkm.events.on('mouse.clicked', function(data) {
 });
 
 setInterval(() => {
-    // console.log(totalCMx);
-    // console.log(totalCMy);
-    // console.log(keystrokes);
-}, 1000);
+    fs.writeFileSync("./lud.json", JSON.stringify(userData()))
+}, 5000);
