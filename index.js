@@ -1,4 +1,4 @@
-var gkm = require('gkm');
+var gkm = require('./customgkm.js');
 const express = require('express');
 const path = require('path');
 const app = express();

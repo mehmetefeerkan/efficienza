@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "deploy": "pm2 start index.js"
+    "deploy": "pm2 start index.js" 
   },
   "keywords": [],
   "author": "",
